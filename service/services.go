@@ -1,6 +1,7 @@
 package service
 
 import (
+	"strconv"
 	"github.com/gin-gonic/gin"
 	"bank-account/persistence"
 	"database/sql"
@@ -57,7 +58,7 @@ func SetupRoute(s *Server) *gin.Engine {
 
 	root := r.Group("/")
 	root.GET("/users", s.All)
-	root.GET("/users/:id", s.All)
+	root.GET("/users/:id", s.FindByID)
 	root.POST("/users", s.All)
 	root.PUT("/users/:id", s.All)
 	root.DELETE("/users/:id", s.All)
@@ -76,7 +77,6 @@ func SetupRoute(s *Server) *gin.Engine {
 	// - request body: {“ﬁrst_name”: “John”, “last_name”: “Doe”}
 	// - DELETE /users/:id สำหรับลบ user ตาม id
 	// - POST /users/:id/bankAccounts สำหรับเพิ่ม bank account ให้ user ตาม :id
-
 	// - request body: {“account_number”: “123456”, “name”: “John Doe”}
 	// - GET /users/:id/bankAccounts สำหรับดึง bank account ทั้งหมดของ user ตาม :id
 	// - DELETE /bankAccounts/:id สำหรับลบ bank account ตาม :id
@@ -92,6 +92,19 @@ func SetupRoute(s *Server) *gin.Engine {
 
 func (s *Server) All(c *gin.Context) {
 	users, err := s.userService.All()
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
+			"object":  "error",
+			"message": fmt.Sprintf("db: query error: %s", err),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, users)
+}
+
+func (s *Server) FindByID(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Param("id"))
+	users, err := s.userService.FindByID(id)
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"object":  "error",
