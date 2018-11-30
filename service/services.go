@@ -91,7 +91,7 @@ func SetupRoute(s *Server) *gin.Engine {
 }
 
 func (s *Server) All(c *gin.Context) {
-	todos, err := s.userService.All()
+	users, err := s.userService.All()
 	if err != nil {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{
 			"object":  "error",
@@ -99,5 +99,5 @@ func (s *Server) All(c *gin.Context) {
 		})
 		return
 	}
-	c.JSON(http.StatusOK, todos)
+	c.JSON(http.StatusOK, users)
 }

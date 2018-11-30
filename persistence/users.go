@@ -1,11 +1,13 @@
 package persistence
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 type User struct {
 	ID        int64  `json:"id"`
-	firstName string `json:"first_name"`
-	lastName  string `json:"last_name"`
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
 }
 
 type UserService interface {
@@ -28,7 +30,7 @@ func (s *UserServiceImp) All() ([]User, error) {
 	users := []User{} // set empty slice without nil
 	for rows.Next() {
 		var user User
-		err := rows.Scan(&user.ID, &user.firstName, &user.lastName)
+		err := rows.Scan(&user.ID, &user.FirstName, &user.LastName)
 		if err != nil {
 			return nil, err
 		}
