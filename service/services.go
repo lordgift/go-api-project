@@ -1,14 +1,15 @@
 package service
 
 import (
-	"strconv"
-	"github.com/gin-gonic/gin"
 	"bank-account/persistence"
 	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"os"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Server struct {
@@ -18,27 +19,27 @@ type Server struct {
 }
 
 func InitiateDB() *Server {
-	db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
+	db, err := sql.Open("mysql", os.Getenv("DATABASE_URL"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	createTable := `
-	CREATE TABLE IF NOT EXISTS Users (
-		id SERIAL PRIMARY KEY,
-		first_name TEXT,
-		last_name TEXT
-	);
-	CREATE TABLE IF NOT EXISTS BankAccounts (
-		id SERIAL PRIMARY KEY,
-		user_id TEXT,
-		account_number TEXT,
-		name TEXT,
-		balance FLOAT
-	);
-	`
-	if _, err := db.Exec(createTable); err != nil {
-		log.Fatal(err)
-	}
+	// createTable := `
+	// CREATE TABLE IF NOT EXISTS Users (
+	// 	id int unsigned auto_increment primary key,
+	// 	first_name VARCHAR(100),
+	// 	last_name VARCHAR(100)
+	// );
+	// CREATE TABLE IF NOT EXISTS BankAccounts (
+	// 	id int unsigned auto_increment primary key,
+	// 	user_id VARCHAR(100),
+	// 	account_number VARCHAR(100),
+	// 	name VARCHAR(100),
+	// 	balance FLOAT
+	// );
+	// `
+	// if _, err := db.Exec(createTable); err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	s := &Server{
 		db: db,
